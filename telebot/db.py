@@ -4,7 +4,7 @@ from typing import List
 
 class SQL:
     """SQL es un wrapper para sqlite
-    Abstrae alguans simples operaciones
+    Abstrae algunas simples operaciones
     como la creacion de tablas y commits.
     """
 

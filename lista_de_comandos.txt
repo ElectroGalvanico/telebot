@@ -1,0 +1,85 @@
+#Navegación
+
+ls #Muestra todos los archivos y carpetas de un directorio
+
+cd "directorio" #Navegar a un directorio
+
+cd #Regresar al directorio mas alto
+
+cd . #Subir un nivel de directorio
+
+mkdir #Crea un nuevo directorio
+
+rmdir #Borra un directorio
+
+
+#Git
+
+git log --oneline --graph --all #Muestra el historial de commits con sus respectivos branches
+
+git commit --amend -m "Nuevo mensaje de commit" #Reescribir mensajes del ultimo comit
+
+git add . #Agrega todos los cambios nuevos y los convierte en "staged"
+
+
+#Venv
+
+python -m venv "Nombre del virtual enviroment" #Crea un ambiente virtual en directorio actual
+
+source D:/Programas/Git/Mis_Repos/telebot/.venv/Scripts/activate #Activar este venv
+
+deactivate #Desactivar cualquier venv
+
+#Python
+
+str.repr([str]) #Imprime en pantalla los caracteres literalmente: "\t" "\n"
+
+str.find([str]) #Encuentra la posicion de un caracter en una cadena
+
+str.split([str]) #Separa un string en una lista de cadenas dividiendolas por un caracter
+
+str.strip([str]) #Borra los espacios que preceden y suceden a la cadena desde la cual se está llamando
+
+str.startswith([str]) #Retorna un booleano si la cadena ingresada coincide con el inicio de otra
+
+str.endswith([str]) #Retorna un booleano si la cadena ingresada coincide con el final de otra
+
+str.replace([str]) #Reemplaza un (conjunto de) carácter(es) por otro
+
+os.listdir([path]) #Lista de archivos en un directorio
+
+os.getcwd() #Cadena de el directorio actual 
+
+os.mkdir([path]) #Crea una carpeta nueva en un directorio especifico
+
+os.path.exists([path]) #Retorna un booleano si la cadena ingresada coincide con un directorio
+
+os.rename([path],[path]) #Cambia el nombre de una carpeta
+
+os.remove([path]) #Borra el archivo
+
+os.rmdir([path]) #Borra una carpeta vacia
+
+shutil.rmtree([path]) #Borra una carpeta con contenido
+
+shutil.copy([path],[path]) #Copia un archivo o carpeta
+
+shutil.move([path],[path]) #Mueve un archivo a otra carpeta
+
+python webservice.py
+
+r.content() #Requests
+
+f.write()
+
+f.open()
+
+python manage.py shell
+
+python manage.py migrate
+
+python manage.py runserver
+
+#Pip
+
+pip install -r requirements.txt #Instala todos los modulos y versiones presentes en el archivo .txt

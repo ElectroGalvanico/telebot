@@ -15,7 +15,7 @@ def open_env():
     y hace un parseo de las variables, las guarda en un diccionario
     options y tambien lo setea como variable de entorno
     """
-    with open(f"{PWD}/.env", "r") as f:
+    with open(f"{PWD}/env", "r") as f:
         _envs = f.readlines()
 
     options = {}

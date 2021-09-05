@@ -1,0 +1,28 @@
+1. Que significa el `ON CONFLICT REPLACE` en la tabla `message` y que pasaria si no estuviera?
+
+ON CONFLICT es una clausula de una query de SQL donde ejecuta una accion cuando hay conflicto con las
+limitaciones implementadas por UNIQUE, NOT NULL, CHECK y PRIMARY KEY. El algoritmo REPLACE borra todas
+las filas que tienen la limitacion antes de reemplazarlas por las nuevas y continuar con las demas
+ejecuciones.
+No encontramos ningun conflicto al eliminar esa parte de codigo y no estamos seguros de que es lo que
+hace exactamente.
+
+2. Cuales serian las ventajas y desventajas de pasar `telegram.py` a un paradigma orientado a objetos?
+
+Las ventajas serian que podriamos encapsular los mensajes del usuario para no tener que dividir las
+interacciones en funciones aparte. Podriamos crear una clase y crear subclases para agilizar el
+codigo y como se escribe con la herencia de clases.
+Por otro lado, al no estar tan familiarizados con la programacion orientada a objetos, puede ser
+abrumador intentar que todos esten acostumbrados a ese metodo de trabajo, por lo que un codigo
+mas ineficiente pero mas facil de usar puede ser mejor en este caso.
+
+3. Hay algo que pueda generalizarse en `models.py` ?
+
+Se podria escribir las funciones "add" y "print_table" aparte e incluirlas despues, llamandolas
+por fuera.
+
+4. Si solo **ciertos** usuarios pudieran hablar con el bot, que habria que modificar para que eso sea
+ posible?
+
+ Lo que habria que hacer es intentar conseguir credenciales de los usuarios que intentan interactuar
+ con el telebot para que no cualquiera pudiera hacerlo. Quizas con una contraseña o con un autenticador.

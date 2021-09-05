@@ -18,11 +18,15 @@ def get_updates():
     de obtener updates desde telegram
     """
     updates = telegram.get_updates(token)
+    print("Updates:", end="\t")
+    pprint(updates)
     for _upt in updates:
         update = Update(db)
         try:
             update.add(_upt["update_id"])
             telegram.register_message(db, _upt["message"], token)
+            telegram.respond_message(_upt["message"], token)
+            #telegram.continuar_interaccion(_upt["message"], token) #Debug necesario
         except sqlite3.IntegrityError:
             print("Update ya registrado")
 
