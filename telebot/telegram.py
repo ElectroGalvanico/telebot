@@ -154,7 +154,7 @@ def continuar_interaccion(data, tkn, database, table):
             data["chat"]["id"], tkn
         )
     
-    if "hola" in mensaje.lower() and (len(mensaje) >= 4):  
+    elif "hola" in mensaje.lower() and (len(mensaje) >= 4):  
         send_message(
             f"Hola! Que informacion quieres que te de hoy? Puedo decirte el precio del dolar y el clima.",
             data["chat"]["id"], tkn
