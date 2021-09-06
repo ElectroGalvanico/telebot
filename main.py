@@ -25,8 +25,7 @@ def get_updates():
         try:
             update.add(_upt["update_id"])
             telegram.register_message(db, _upt["message"], token)
-            telegram.respond_message(_upt["message"], token, "telegram.db", "message")
-            telegram.continuar_interaccion(_upt["message"], token,"telegram.db", "message")
+            telegram.respond_message(_upt["message"], token, "telegram.db", "message")            
         except sqlite3.IntegrityError:
             print("Update ya registrado")
 

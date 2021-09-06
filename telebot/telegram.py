@@ -136,12 +136,16 @@ def register_message(sql: SQL, data, tkn):
 
 
 def respond_message(data, tkn, database, table):
-    last_date = get_message_creation_date("telegram.db","message")
-    if last_date < (datetime.datetime.now() - datetime.timedelta(minutes=30)):
+    last_date = get_message_creation_date(database,table)
+    time_comparason = datetime.datetime.now() - datetime.timedelta(minutes=30)
+   
+    if last_date < time_comparason:
 
         send_message(f"👋 Hola {data['chat']['first_name']}! en que te puedo ayudar?",
             data["chat"]["id"], tkn
             )
+    else:
+        continuar_interaccion(data, tkn, database, table)    
 
 def continuar_interaccion(data, tkn, database, table):
     #Manda un mensaje adicional con una pregunta para que el usuario pregunte algo especifico
@@ -219,7 +223,7 @@ def download_image(file_id, bot_token):
 
     response = requests.get(
        f"https://api.telegram.org/file/bot{bot_token}/{file_path}"
-    )
+     )
 
     #print (response) #debug
 
@@ -244,30 +248,29 @@ def get__last_arg(database, table):
 
     return rows[-1][2]
 
-def get_message_creation_date(database,table):
-	#Devuelve la fecha en formato fecha del ultimo mensaje
-	conn = sqlite3.connect(database)
+def get_message_creation_date(database, table):
+    conn = sqlite3.connect(database)
 
-	cursor = conn.cursor()
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM {table}")
+    row = cursor.fetchone()
+    rows = []
 
-	cursor.execute(f"SELECT * FROM {table}")      
-	row = cursor.fetchone()    
-	# Using the cursor as iterator
-	rows = []
-	cursor.execute(f"SELECT * FROM {table}")
-	for row in cursor:
-		rows.append(row)
+    for row in cursor:
+        rows.append(row)
 
-	date = rows[-1][-1].split(" ")	
-	symbols = ["-",":"]
+    try:
+        date = rows[-2][-1].split(" ")
+        symbols = ["-",":"]
+        for i in range(len(date)):
+            date[i] = date[i].replace(".",":")
+            date[i] = date[i].split(f"{symbols[i]}")
 
-	for i in range(len(date)):
-		date[i] = date[i].replace(".",":")
-		date[i] = date[i].split(f"{symbols[i]}")
-
-	joined_date = date[0]+date[1]
-
-	final_a = asignador_de_fechas(joined_date)
-
-	print (final_a) #debug
-	return final_a
+        joined_date = date[0] + date[1]
+        final_a = asignador_de_fechas(joined_date)
+        print (final_a) #debug
+        return final_a
+    except IndexError:
+        date = datetime.datetime.now() - datetime.timedelta(minutes=60)        
+        print (date)
+        return date
