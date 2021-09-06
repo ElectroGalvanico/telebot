@@ -4,11 +4,13 @@ from pprint import pprint
 
 import requests
 import sqlite3
+import datetime
 
 # from test import get_updates_id
 from telebot.conf import open_env
 from telebot.db import SQL
 from telebot.models import Message
+from telebot.funciones import asignador_de_fechas
 
 options = open_env()
 TELEGRAM_TOKEN = options["TELEGRAM_TOKEN"]
@@ -133,42 +135,74 @@ def register_message(sql: SQL, data, tkn):
         print(f"downlaod_image return: {download_image(file_id, TELEGRAM_TOKEN)}")
 
 
-def respond_message(data, tkn):
-    send_message(f"👋 Hola {data['chat']['first_name']}! en que te puedo ayudar?",
-        data["chat"]["id"], tkn
+def respond_message(data, tkn, database, table):
+    last_date = get_message_creation_date("telegram.db","message")
+    if last_date < (datetime.datetime.now() - datetime.timedelta(minutes=30)):
+
+        send_message(f"👋 Hola {data['chat']['first_name']}! en que te puedo ayudar?",
+            data["chat"]["id"], tkn
+            )
+
+def continuar_interaccion(data, tkn, database, table):
+    #Manda un mensaje adicional con una pregunta para que el usuario pregunte algo especifico
+    #cant_interacciones = len(get_updates_id("telegram.db","tlg_update"))
+    #print (cant_interacciones) #debug
+    mensaje = get__last_arg(database, table)
+    if "info" in mensaje.lower() and (len(mensaje) == 4 or len(mensaje) == 11):        
+        send_message(
+            f"Información: Puedo darte informacion acerca del precio del dolar o el clima ¿Cual quieres?",
+            data["chat"]["id"], tkn
+        )
+    
+    if "hola" in mensaje.lower() and (len(mensaje) >= 4):  
+        send_message(
+            f"Hola! Que informacion quieres que te de hoy? Puedo decirte el precio del dolar y el clima.",
+            data["chat"]["id"], tkn
         )
 
-def continuar_interaccion(data, tkn):
-    #Manda un mensaje adicional con una pregunta para que el usuario pregunte algo especifico
-    cant_interacciones = len(get_updates_id("telegram.db","tlg_update"))
-    print (cant_interacciones)
-    send_message(
-        f"Genial! Que informacion quieres que te de hoy?",
-        data["chat"]["id"], tkn
-    )       
-
-def peticion_del_usuario (database,data,tkn):
-    #Busca en la base de datos cual es la ultima peticion del usuario para compararla con los
-    #scripts de respuesta
-    conn = sqlite3.connect(database)
-
-    cursor = conn.cursor()
-
-    cursor.execute(f"SELECT text FROM message")
-    fetch = cursor.fetchall()
-    mensajes = []
-    for fila in fetch:
-        mensajes.append(fila[0])
-
-    conn.close()
-    print (mensajes)
-    try:
-        return str(mensajes[-1])
-    except ValueError:
+    elif "dolar" in mensaje.lower() and (len(mensaje) == 3 or len(mensaje) == 5):
+        oficial_compra = 97.32
+        oficial_venta = 103.56
+        blue_compra = 179
+        blue_venta =  182
         send_message(
-        f"Procesando...",
-        data["chat"]["id"], tkn
-    )
+            f"El precio del dolar en Argentina es de {oficial_compra} precio de compra, de {oficial_venta} precio de venta para el dólar oficial y de {blue_compra} precio de compra, de {blue_venta} precio de venta para el dólar blue.",
+            data["chat"]["id"], tkn
+        )
+        send_message(
+            f"¿Qué más quieres saber?",
+            data["chat"]["id"], tkn
+        )
+
+    elif "clima" in mensaje.lower() or "cordoba" in mensaje.lower():
+        temperatura = 20
+        send_message(
+            f"El clima en Córdoba Argentina es de {temperatura}°C grados",
+            data["chat"]["id"], tkn
+        )
+        send_message(
+            f"¿Qué más quieres saber?",
+            data["chat"]["id"], tkn
+        )
+
+    else:
+        send_message(
+            f"Lo siento. No entendí. Para más informacion escribir info o informacion.",
+            data["chat"]["id"], tkn
+        )
+
+
+def terminar_interaccion (data, tkn, database, table):
+    #Busca en la base de datos cual es la ultima peticion del usuario para terminar la interaccion
+    mensaje = get__last_arg(database,table)
+    if "terminar" in mensaje.lower():
+        send_message(
+            f"Muchas gracias por usar este telebot ¡Nos veremos después!",
+            data["chat"]["id"], tkn
+        )
+        return True
+    else:
+        return False
 
 
 def download_image(file_id, bot_token):
@@ -193,3 +227,47 @@ def download_image(file_id, bot_token):
     with open(local_filename, 'wb') as f:
         f.write(response.content)
     return local_filename
+
+def get__last_arg(database, table):
+    #Devuelve el ultimo mensaje de la base de datos
+    conn = sqlite3.connect(database)
+
+    cursor = conn.cursor()
+
+    cursor.execute(f"SELECT * FROM {table}")      
+    row = cursor.fetchone()    
+    # Using the cursor as iterator
+    rows = []
+    cursor.execute(f"SELECT * FROM {table}")
+    for row in cursor:
+        rows.append(row)
+
+    return rows[-1][2]
+
+def get_message_creation_date(database,table):
+	#Devuelve la fecha en formato fecha del ultimo mensaje
+	conn = sqlite3.connect(database)
+
+	cursor = conn.cursor()
+
+	cursor.execute(f"SELECT * FROM {table}")      
+	row = cursor.fetchone()    
+	# Using the cursor as iterator
+	rows = []
+	cursor.execute(f"SELECT * FROM {table}")
+	for row in cursor:
+		rows.append(row)
+
+	date = rows[-1][-1].split(" ")	
+	symbols = ["-",":"]
+
+	for i in range(len(date)):
+		date[i] = date[i].replace(".",":")
+		date[i] = date[i].split(f"{symbols[i]}")
+
+	joined_date = date[0]+date[1]
+
+	final_a = asignador_de_fechas(joined_date)
+
+	print (final_a) #debug
+	return final_a

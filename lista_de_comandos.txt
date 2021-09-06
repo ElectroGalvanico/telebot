@@ -26,7 +26,7 @@ git add . #Agrega todos los cambios nuevos y los convierte en "staged"
 
 python -m venv "Nombre del virtual enviroment" #Crea un ambiente virtual en directorio actual
 
-source D:/Programas/Git/Mis_Repos/telebot/.venv/Scripts/activate #Activar este venv
+source D:/Programas/Git/Repositorios/telebot/.venv/Scripts/activate #Activar este venv
 
 deactivate #Desactivar cualquier venv
 
